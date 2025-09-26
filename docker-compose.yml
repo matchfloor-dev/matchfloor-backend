@@ -1,0 +1,56 @@
+version: '3'
+
+services:
+    # Database
+    database:
+        container_name: database-dev
+        image: mysql:8.0
+        restart: always
+        volumes:
+            - ./db-data:/var/lib/mysql:Z
+        ports:
+            - 3308:3306
+        environment:
+            - MYSQL_ROOT_PASSWORD=123456
+            - MYSQL_DATABASE=plugin
+            - MYSQL_USER=plugin
+            - MYSQL_PASSWORD=123456
+        healthcheck:
+            test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+            interval: 5s
+            timeout: 5s
+            retries: 5
+
+    # Backend
+    # backend:
+    #     container_name: backend-dev
+    #     build: .
+    #     ports:
+    #         - 4000:4000
+    #     volumes:
+    #         - ./src:/usr/src/app/src
+    #     command: npm run start:dev
+    #     environment:
+    #         - DB_NAME=${DB_NAME}
+    #         - DB_PASSWORD=${DB_PASSWORD}
+    #         - DB_PORT=${DB_PORT}
+    #         - DB_USER=${DB_USER}
+    #         - DB_HOST=${DB_HOST}
+    #         - EMAIL_SENDER=${EMAIL_SENDER}
+    #         - EMAIL_PASSWORD=${EMAIL_PASSWORD}
+    #         - EMAIL_HOST=${EMAIL_HOST}
+    #         - NODE_ENV=${NODE_ENV}
+    #         - JWT_SECRET=${JWT_SECRET}
+    #         - FRONTEND_URL=${FRONTEND_URL}
+    #         - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+    #         - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+    #         - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+    #         - CLOUDINARY_UPLOAD_PRESET=${CLOUDINARY_UPLOAD_PRESET}
+    #         - STRIPE_SECRET=${STRIPE_SECRET}
+    #         - STRIPE_SUCCESS_URL=${STRIPE_SUCCESS_URL}
+    #         - STRIPE_CANCEL_URL=${STRIPE_CANCEL_URL}
+    #         - STRIPE_ENDPOINT_SECRET=${STRIPE_ENDPOINT_SECRET}
+    #         - LANDING_URL=${LANDING_URL}
+    # depends_on:
+    #     database:
+    #         condition: service_healthy

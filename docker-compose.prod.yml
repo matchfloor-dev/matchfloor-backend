@@ -1,0 +1,48 @@
+version: '3'
+
+services:
+    # Database
+    database:
+        container_name: database
+        image: mysql:8.0
+        restart: always
+        volumes:
+            - ./db-data:/var/lib/mysql:Z
+        ports:
+            - 3308:3306
+        environment:
+            - MYSQL_ROOT_PASSWORD=123456
+            - MYSQL_DATABASE=plugin
+            - MYSQL_USER=plugin
+            - MYSQL_PASSWORD=123456
+        healthcheck:
+            test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+            interval: 5s
+            timeout: 5s
+            retries: 5
+
+    # Backend
+    backend:
+        container_name: backend
+        build: .
+        ports:
+            - 5000:5000
+        volumes:
+            - ./src:/usr/src/app/src
+        command: npm run start:dev
+        environment:
+            - DB_NAME=${DB_NAME}
+            - DB_PASSWORD=${DB_PASSWORD}
+            - DB_PORT=3306
+            - DB_USER=${DB_USER}
+            - DB_HOST=database
+            - EMAIL_SENDER=${EMAIL_SENDER}
+            - EMAIL_PASSWORD=${EMAIL_PASSWORD}
+            - EMAIL_HOST=${EMAIL_HOST}
+            - FRONTEND_URL=${FRONTEND_URL}
+            - JWT_SECRET=${JWT_SECRET}
+            - NODE_ENV=development
+            - LANDING_URL=${LANDING_URL}
+        depends_on:
+            database:
+                condition: service_healthy

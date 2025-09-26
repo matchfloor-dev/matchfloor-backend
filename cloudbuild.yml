@@ -1,0 +1,20 @@
+steps:
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "southamerica-east1-docker.pkg.dev/lateral-replica-431017-s7/plugin-repo/backend",
+        "-f",
+        "dockerfile.prod",
+        "--platform=linux/amd64",
+        ".",
+      ]
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "push",
+        "southamerica-east1-docker.pkg.dev/lateral-replica-431017-s7/plugin-repo/backend",
+      ]
+options:
+  logging: CLOUD_LOGGING_ONLY
